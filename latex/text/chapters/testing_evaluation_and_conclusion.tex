@@ -1,0 +1,282 @@
+% =====================  ========================== 
+\chapter{Testing and evaluation of the implemented software}
+\begin{chapterabstract}
+    This chapter evaluates the implemented software from a technical and user experience perspective.
+    Advantages and disadvantages of the solution are discussed, and possible paths for 
+    future improvement are laid out. 
+\end{chapterabstract}
+
+\section{Testing}
+\subsection{Ambisonic panning correctness}
+Since I do not have a surround speaker array at my disposal, I have used a the 
+the BinauralDecoder plugin from the IEM plugin suite \cite{iem_plugin_suite} to judge the 
+correctness of spatial panning. Subjectively, the software is performing correctly, 
+and the audible direction to the sound source corresponds to the direction from the camera to 
+the object in the Blender scene.
+
+To complement these subjective tests, and to verify that the ambisonic panning is not 
+being performed incorrectly in other aspects, that may not result in obvious audible differences,
+I've chosen to compare the output of the Ambilink VST to the output of the MultiEncoder plugin from the IEM suite \cite{iem_plugin_suite}.
+
+To achieve this, I've created a simple Blender scene with objects positioned
+at specific positions relative to the camera (figure \ref{fig:blender_test_scene}).
+\begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{images/testing/blender_test_scene.png}       
+    \caption{The Blender scene used for comparing Ambilink's output to the output of the IEM MultiEncoder plugin.
+        Image courtesy of the author.
+        \label{fig:blender_test_scene}}
+\end{figure}
+Switching to Reaper, a simple test project has been used with a single mono track containing an audio file 
+of a pure sine wave (with constant volume) routed to the two multichannel tracks - one with the Ambilink VST, 
+and one with the IEM MultiEncoder (figure \ref{fig:reaper_project}). 
+(The frequency composition of the input signal does not matter for the purposes of this test, 
+but it is of course essential that the input signal is identical for both encoders.)
+
+\begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{images/testing/reaper_project_setup.png}       
+    \caption{Reaper project used for testing with the Ambilink and the IEM encoder plugins open. 
+    Image courtesy of the author.
+        \label{fig:reaper_project}}
+\end{figure}
+
+In comparing the output of the encoders, the IEM EnergyVisualizer \cite{iem_plugin_suite} plugin has been used to visualise the
+energy distribution of the ambisonic signal on the surface of a sphere.\footnote{
+    I have to mention that the EnergyVisualizer plugin (v1.0.3) has proven to be extremely unstable, consistently crashing Reaper 
+    whenever it's GUI is closed. The crashes also occurred when no instances of the Ambilink VST or any other plugins were loaded. 
+}
+For each test case, a different object from the Blender scene was selected in Ambilink, and the same direction was set in the IEM MultiEncoder using the plugin's GUI.
+The SN3D normalisation convention has been used in both encoders, and both visualiser instances. 
+Distance attenuation has been disabled in Ambilink, so the output signal's gain is identical.
+
+As can be seen in figure \ref{fig:energy_visualiser_cmp} both instances of the IEM EnergyVisualizer produced identical visualisations 
+for identical panning directions. Other panning directions have been tested besides the two presented in figure \ref{fig:energy_visualiser_cmp}, 
+and the visualisation of the output of the two encoders has been identical in all cases. 
+A screen capture demonstrating that the movement of an object in Blender matches the visualisation 
+produced by the IEM EnergyVisualizer plugin can be found on the attached media in the \cppinline{demo_videos_and_renders/} directory
+under the filename \cppinline{8_iem_visualiser_realtime_demo.mkv}.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.95\textwidth]{images/testing/energy_visualiser_comparison.png}       
+    \caption{The ambisonic output produced by Ambilink (bottom row), and the IEM MultiEncoder (top row), visualised using the IEM EnergyVisualizer plugin. 
+             Panning directions are identical for each column. Image courtesy of the author.
+    \label{fig:energy_visualiser_cmp}}
+\end{figure}
+
+\subsection{Overall functionality}
+Automated integration tests of both components would have been the ideal approach for testing
+interprocess communication and other aspects of the solution. 
+Unfortunately, both plugins require host software to run. Because of that, creation of automated integration tests would have taken up a 
+disproportionate amount of the overall development time. Instead, I have settled on testing the solution manually.
+
+Manual testing has been performed throughout development. A mid-range laptop from 2018 with an AMD Ryzen 5 2500U processor running Ubuntu 22.04.1 
+has been used for testing. Blender 3.4.1 and Reaper 6.73 have been used to host the plugins.
+Several screen recordings of performed tests are available on the attached media in the \cppinline{demo_videos_and_renders/} directory.
+It should be noted that screen capture was performed locally (without using an external capture card) resulting in additional CPU load.
+The following paragraphs will summarise the results of the tests. Where applicable, the filenames of screen captures included on the attached
+media will be referenced by using a monospaced font, e.g. \cppinline{1_real_time.mkv}.
+
+\paragraph*{General VST functionality}
+Picking a Blender object and changing other parameters (Ambisonics order,
+normalisation type, distance attenuation function and distance attenuation maximum distance) functions correctly. 
+(\cppinline{0_params_and_object_sub.mkv})
+So does saving and loading of the VST plugin's state. 
+Upon reopening the Reaper project,
+parameter values are consistent to the previous state, and the VST automatically resubscribes 
+to the previous object. I should note that if the Blender object was renamed while the VST wasn't running,
+it would show up as deleted on reconnection because Ambilink IDs are only utilised when the VST instance is subscribed.
+(\cppinline{4_vst_save_load.mkv})
+When a blender object is renamed or deleted, the change is reflected in the VST GUI. (\cppinline{7_rename_delete.mkv})
+
+\paragraph*{IPC stability}
+The IPC connection has proven to be stable - no spontaneous disconnects have occurred during testing.
+This was expected since no external factors except system load should be able to affect the interprocess communication.
+The VST plugin reacts quickly whenever the Blender server is launched, switching to the ``Connected'' state and updating the GUI
+practically immediately. The delay before the plugin GUI updates after stopping the Ambilink server or closing Blender is longer, 
+up to multiple seconds, but still acceptable for the use case. (\cppinline{3_disconnect_reconnect.mkv})
+
+\paragraph*{IPC latency}
+I have performed two latency tests. The first one with a single instance of the Ambilink VST,
+and the second one with 20 instances all subscribed to different
+Blender objects\footnote{Having 20 instances all subscribed to a single object wouldn't have
+increased the load since only one \cppinline{OBJECT_POSITION_UPDATED} message
+would have been published on each update.}.
+The Blender scene used for the test contained more than 2000 objects overall.
+Latency has been calculated from screen captures by counting the number of frames
+between the first frame where the timeline position is updated in the Blender GUI
+and when a change in panning direction is visible on the IEM EnergyVisualizer instance placed after one of the VSTs.
+The screen capture has been performed at 30 frames per second.
+
+For the first test, the delay has been around three frames, which is around $100ms$.
+While this is a relatively significant delay, it is sufficiently low for the use case, 
+and latency has not been an issue during normal use.
+(\cppinline{5_latency_test_1.mkv})
+Surprisingly, the second test, where the overall load on the system was significantly higher 
+due to the number of active Ambilink instances, all encoding fifth order ambisonics, had the same 
+result of around three frames. (\cppinline{6_latency_test_2.mkv})
+This may be caused by the screen recording software skipping frames, but, even if the real latency 
+was double the measured latency, this would have been a good result considering the increased load. 
+Although these tests don't account for several factors, such as
+the latency introduced by the IEM EnergyVisualizer plugin, they provide an upper bound
+that is precise enough to prove that IPC latency is not detrimental to the overall usability of the software.
+
+\paragraph*{Blender add-on performance}
+Another factor to consider is how the Ambilink add-on affects Blender performance.
+In my testing\footnote{
+    These tests have not been recorded, as the screen capture induced too much additional CPU load.
+}, starting the Ambilink server had no noticeable effect on the playback FPS in most cases.
+To keep the system load as consistent as possible, the Ambilink VST instances were always running in the 
+background (encoding is still performed when disconnected)
+
+In a scene with 70 objects and a very simple animation of some cubes\footnote{
+    Because of the relatively low-end hardware used for testing, and the Ambilink VSTs running
+    in the background, a more demanding scene was not 
+    required to get on the verge of dipping below the target framerate.
+},
+running the Ambilink server at the maximum update frequency of 120Hz\footnote{
+    This is overkill for normal use, update frequencies in the range of 30-60Hz are sufficient.
+} 
+with 15 connected VST instances (set to first order to reduce encoding load), 
+resulted in no visible FPS dips. 
+Adding five more VST instances did however result in the overall framerate 
+being lower due to the added CPU load. This made periodic dips down to around 22-23 FPS from the target 24 noticeable.
+These dips are likely caused by the Ambilink server processing IPC requests 
+and only appear when the CPU is already under significant load.
+Overall, with a sufficiently performant machine (as opposed to the laptop used for testing), 
+the performance impact of running the Ambilink server should not pose any issues.
+
+\paragraph*{Offline rendering}
+During development, many rendering tests have been performed under various conditions - 
+different animation start and end frames (including extremes, such as a single frame animation),
+different numbers of VST instances, different numbers of objects in the scene. 
+A screen capture of two rendering tests can be found under the filename \cppinline{2_offline_render.mkv}
+on the attached media. 
+% //TODO: create more output examples, extend
+In all performed tests, offline rendering has functioned correctly -
+panning directions are synced with the position of objects in the animation.
+
+A short demo animation has been produced and is included on the attached media 
+under the \cppinline{demo_videos_and_renders/demo_animation/} directory.
+The 3D animation has been rendered with Blender, the audio has been rendered using Reaper and Ambilink.
+Only a binaural version could be included on the attached media due to the large size of the full 36-channel fifth order ambisonics file.
+No other plugins or effects were applied except for the Ambilink encoders on each of the five channels (3 channels are used for objects that can be seen in the video, and 2 more for ambient sounds)
+and the IEM BinauralDecoder plugin used for decoding.
+
+\section{Future improvements}
+The implemented software is fully functional, fulfils the requirements defined in chapter~\ref{chapter:ui_ux_design_reqs}
+and the overall goal of the thesis.
+However, while no user experience testing has been performed, it is safe to say there is room for improvement in 
+that regard. The following paragraphs list several unsatisfactory aspects of the user experience in order of 
+descending importance and outline potential paths for future improvement.
+
+\paragraph*{Object restoration}
+Several improvements can be made to the Blender add-on in terms of handling operations with objects.
+Besides the issues with duplicating objects described in \ref{subsec:blender_addon_limitations}, 
+Ambilink also doesn't handle undoing the deletion of an object in a user-friendly way - if the 
+user deletes an object and then undoes the change, the object will still show up as deleted in any 
+previously subscribed VST instances. Both of these aspects are high priority 
+targets for future improvement.
+
+\paragraph*{Parameter synchronisation}
+It is likely that all ambisonics encoders used in a project will be using the same settings. 
+Despite that, in the current version of Ambilink, the ambisonics settings
+(order and normalisation type) have to be manually set for each VST instance.
+I see two main approaches to solving this problem. 
+One solution would be to initialise new VST instances with the last used settings - for example, 
+if the user creates one instance and adjusts the ambisonics order, 
+the next instance would automatically use the same value.
+
+Another approach would be to add a GUI for managing VST instances.
+This could be implemented as part of the Blender plugin, or as a standalone application.
+This would allow the user to easily change the parameters of multiple Ambilink VST instances at 
+once, which could be very useful in some cases. For example, the user could select a group of 
+encoders handling background sounds with lower importance, and lower the ambisonics 
+order, and then increase the order for more important sounds, allowing to easily 
+distribute CPU usage by sound priority. If such a GUI was ever to be implemented, 
+it could, of course, allow to control other parameters besides the ambisonics order. 
+This would open a lot of opportunities for improving usability.
+
+\paragraph*{Timeline synchronisation}
+Another useful feature that is missing from the current version of Ambilink is the ability
+to synchronise the playback position of the animation in Blender with the playback position in the DAW.
+That would make the real-time preview even more useful since the user would be able to easily 
+preview the animation as a whole without rendering audio out.
+Unfortunately, this is not a trivial problem to solve, especially since the target playback FPS
+may not always be reached in Blender. Designing how such a synchronisation system 
+would function from the user's perspective also poses quite a significant UX design challenge.
+
+\paragraph*{Panning offsets}
+In some situations it could be desirable to offset the sound source's
+position from the Blender object's origin without affecting the 3D scene itself.
+This is not currently possible in Ambilink, but could be a useful future addition.
+A direction offset can however be achieved even with the current version by utilising an additional child object in Blender,
+giving it the required offset relative to the parent, and then using the newly created object to position the sound source.
+The disadvantage of this workaround is that it can result in extra objects cluttering the Blender scene.
+It also requires the sound designer or mixing engineer to switch their attention away from the digital audio workstation, 
+so a ``native'' solution would be preferred.
+
+% ===================== Conclusion ========================== 
+
+\chapter{Conclusion}
+The first chapter of this thesis provides a broad overview of the spatial audio field, 
+and describes the three main approaches to representing spatial audio information 
+(CBA, OBA, SBA) and their viability for 360\degree{} video.
+Ambisonics in particular is described in more detail from a practical and 
+theoretical perspective, as the approach most suitable for 360\degree{} video.
+The chapter also examines various methods of decoding ambisonics for playback on 
+surround loudspeaker arrays and via headphones (using HRTFs).
+In the second chapter, various software solutions for spatial audio 
+production are reviewed and their suitability for 360\degree{} video production is evaluated.
+Besides solutions specifically aimed at audio production, the possibility of using other
+types of software, such as game engines, is explored.
+
+The next two chapters are dedicated to the design and development of
+Ambilink - a software solution that implements a VST3 ambisonic encoder, the panning direction
+of which is determined by the position of a 3D object in a Blender scene.
+The Ambilink Blender add-on provides data about objects in the Blender scene to 
+instances of the VST plugin using interprocess communication.
+An object from the Blender scene can be selected using the VST plugin's GUI.
+The direction from the active camera to that object is then used as the 
+panning direction for the ambisonic encoder. When playing audio in-DAW, the 
+panning direction is updated in real time, allowing artists and sound engineers 
+to immediately hear how adjustments made to the Blender scene affect the audio mix.
+The VST plugin is implemented using JUCE framework; NNG is used for interprocess communication.
+No analogous solutions exist at the time of writing this thesis.
+
+Finally, the presented software is evaluated from a technical and user experience perspective.
+To demonstrate the correctness of the ambisonic panning algorithm, 
+the output of the Ambilink VST was compared to the output of the IEM MultiEncoder plugin -
+a well-regarded solution developed at the Institute of Electronic Music and Acoustics.
+Several other aspects of the software
+are evaluated and it is concluded that the software meets the requirements defined in chapter three
+and fulfils the overall goal of providing an improved workflow 
+for producing spatial audio for 360\degree{} video.
+Potential paths for improving the user experience in the future are also discussed, 
+providing a starting point for future extension of the software.
+
+\section{Current state}
+The implemented solution fulfils the goal of providing an improved SBA production workflow 
+for 360\degree{} (immersive) video. As intended, 
+it is especially useful for 360\degree{} 3D animations - in this case,
+in addition to allowing the content creators to utilise Blender's 3D animation tools, 
+it should significantly reduce the number of objects that require manual ambisonic panning;
+for large-scale projects the time savings could be substantial.
+
+The use cases are not however limited to 360\degree{} video.
+The implemented software can be used in any audio production where ambisonic audio may be desired.
+In music production, for example, Blender can be used as an improved user interface for spatial panning.
+Visualising the position of individual sound sources in a full 3D environment 
+could be helpful in creating complex soundscapes. Blender's Python scripting capabilities and animation drivers can also be used
+to define the position of sounds procedurally, which opens up possibilities for utilising Ambilink 
+in generative music.
+
+\section{Final words}
+Overall, I am content with the current state of the project. As stated in the previous section, 
+the current version of Ambilink fulfils the goals of this thesis. 
+The software's architecture is extendable and can serve as a foundation for an even more flexible solution.
+Because the VST plugin and the Blender add-on are connected via IPC, the resulting software is highly modular,
+and either of the components can be exchanged to make it serve a slightly different purpose.
+While I cannot say with certainty that I will continue development of this project myself, 
+it's open-source nature should allow others to improve it beyond what I might have ever envisioned.

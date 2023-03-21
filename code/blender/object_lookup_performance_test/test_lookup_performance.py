@@ -1,0 +1,56 @@
+import bpy
+import timeit
+
+NUMBER_OF_RUNS = 100000
+TEST_OBJ_NAME = 'Plane.1960'
+TEST_PROP_NAME = 'test'
+DESIRED_PROP_VALUE = 1
+DEFAULT_PROP_VALUE = 2
+
+def get_scene_objects():
+    return bpy.context.scene.objects
+
+def lookup_by_name():
+    return get_scene_objects().get(TEST_OBJ_NAME)
+
+def lookup_by_prop():
+    for obj in get_scene_objects():
+        if obj.get(TEST_PROP_NAME) == DESIRED_PROP_VALUE:
+            return obj
+        
+name_timer = timeit.Timer(lookup_by_name)
+prop_timer = timeit.Timer(lookup_by_prop)
+
+test_num = 1
+def test(test_descr):
+    global test_num
+    print(f"\n#### Test {test_num}:", test_descr)
+    by_name_result = name_timer.timeit(NUMBER_OF_RUNS)
+    by_prop_result = prop_timer.timeit(NUMBER_OF_RUNS)
+    print("By name:", by_name_result)
+    print("By custom prop:", by_prop_result)
+    print(f"By custom prop is {by_prop_result/by_name_result} times slower.")
+    test_num += 1
+
+print("==================================")
+print("Number of objects in scene:", len(get_scene_objects()))
+print("Number of runs per test case:", NUMBER_OF_RUNS)
+
+##########################################    
+for obj in get_scene_objects():
+    try:
+        del obj[TEST_PROP_NAME]
+    except KeyError:
+        pass
+
+lookup_by_name()[TEST_PROP_NAME] = DESIRED_PROP_VALUE
+
+test("only one object with custom property defined")
+##########################################
+for obj in get_scene_objects():
+    obj[TEST_PROP_NAME] = DEFAULT_PROP_VALUE
+
+test("all objects have custom property defined but only one with correct value.")
+##########################################
+    
+print("\n==================================\n")

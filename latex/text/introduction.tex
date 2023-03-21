@@ -1,0 +1,59 @@
+\chapter{Introduction}
+
+\section*{Virtual reality and immersive video}
+Virtual reality, or VR, has become increasingly popular in recent years. 
+VR gaming specifically has been steadily rising to mainstream attention. 
+But other forms of immersive content, such as 360\degree{} video 
+are also gaining adoption - YouTube, for example, already provides support for 360\degree{} video
+(and audio) on their platform.
+
+The goal of VR experiences is to fully immerse the user in a virtual environment, striving to erase the gap between the virtual and the real world.
+This is achieved using advanced human-computer interfaces. Most prominently - VR headsets, that allow the user to see into the virtual world, 
+and various motion tracking systems, enabling the user to interact with it.
+Like any new form of human-computer interaction, VR has found applications in many industries,
+but the application most closely related to the goal of this thesis, and, incidentally, the one where most adoption has been seen so far, is entertainment.
+
+While fully interactive experiences, such as games, are prevalent, the applications of VR are not limited to those.
+Immersive, or 360\degree{}, video
+\footnote{Throughout this thesis I will prefer using ``360\degree{} video" instead of ``immersive video",
+because, this being such a new concept, there is some inconsistency in terminology between some sources.}
+is a mostly noninteractive form of VR content that benefits from the advantages of VR, 
+but is closer to traditional film and television than other forms of immersive experiences such as games.
+
+Creation of interactive VR experiences shares more similarity with game development than traditional video production.
+360\degree{} video, on the other hand,
+is largely linear, allowing to use creative software initially developed without VR content in mind.
+Compared to specialized immersive content creation programs, such software
+is often more powerful, costs less, and benefits from higher availability of learning resources regarding it's usage.
+These factors would make it a great choice for creators, if not for the lacklustre VR content support.
+Thankfully, many of these tools are extensible via plugins, allowing developers to fill in the gaps.
+
+\section*{The role of sound in immersive experiences}
+Sound is a key ingredient in achieving immersion in a virtual environment.
+Although it's importance is easily outshined by the importance of sight, hearing is an essential part of human perception
+and getting audio wrong in a VR context can easily ruin the whole experience.
+While simulating the perception of touch - another vital sense - is a very difficult task, doing the same for hearing is fortunately already within our reach 
+(although, as with real-time graphics, physically accurate techniques are still too computationally expensive).
+To do so, as with video, the extension of audio into the third dimension is required.
+Because of that, creating audio for an immersive experience is quite different to normal audio production.
+In addition to the usual recording, sound design and mixing work, the spatial position of sounds must be defined and animated.
+
+\section*{The goal of this thesis}
+It might seem that to utilise the power of modern DAWs (digital audio workstations) for spatial audio production,
+the DAW itself has to provide a user interface for spatial panning\footnote{Spatial panning refers to the act of defining the 3D position of a sound source.}
+, be it natively or via plugins,
+but a different approach may be taken.
+Blender - a free and open source 3D software - already provides all the required tools and an established workflow for 3D animation.
+The challenge lies in finding a way to utilise it's capabilities to control the spatial position of sounds while still using the DAW for sound design and mixing.
+This can be achieved by extending both Blender and the DAW via plugins, allowing the user to use Blender's 3D animation workflow for spatial audio.
+An existing 3D animation can also be used, providing significant time savings for animated 360\degree{} video productions.
+This thesis aims to design and implement such a solution.
+
+% \chapter*{The goals of this thesis}
+% \begin{enumerate}
+%     \item Review the current state of spatial audio technology.
+%     \item Analyse available solutions for spatial audio production (with a focus on 360\degree{} video production).
+%     \item Design a solution that will synchronize the spatial position of sounds in a DAW with the respective
+%     positions of objects in a Blender scene in real time, and then allow to export the resulting audio.
+%     \item Implement said solution, test it, and document it's functionality.
+% \end{enumerate}

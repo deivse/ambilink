@@ -1,0 +1,23 @@
+[requires]
+nng/1.5.2
+spdlog/1.10.0
+fmt/8.1.1
+openblas/0.3.17
+fftw/3.3.9
+glm/cci.20220420
+
+[generators]
+cmake
+cmake_find_package
+cmake_find_package_multi
+
+[options]
+fftw:precision=single
+fftw:simd=avx2
+openblas:build_lapack=True
+spdlog:shared=False
+
+[imports]
+include,  * -> ../third-party/include
+lib,      * -> ../third-party/lib
+licenses, * -> ../third-party/licenses

@@ -1,0 +1,6 @@
+[submodule "code/vst/third-party/Spatial_Audio_Framework"]
+	path = code/vst/third-party/Spatial_Audio_Framework
+	url = git@github.com:leomccormack/Spatial_Audio_Framework.git
+[submodule "code/vst/third-party/nngpp"]
+	path = code/vst/third-party/nngpp
+	url = git@github.com:cwzx/nngpp.git

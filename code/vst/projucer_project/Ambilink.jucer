@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<JUCERPROJECT id="ALcAho" name="Ambilink" projectType="audioplug" useAppConfig="0"
+              addUsingNamespaceToJuceHeader="0" displaySplashScreen="1" jucerFormatVersion="1"
+              projectLineFeed="&#10;" pluginFormats="buildVST3" pluginManufacturer="Ivan Desiatov"
+              pluginManufacturerCode="IvDe" pluginCode="AmLK" pluginVST3Category="Spatial,Surround,Up-Downmix"
+              cppLanguageStandard="20" defines="SAF_USE_OPEN_BLAS_AND_LAPACKE&#10;SPDLOG_FMT_EXTERNAL"
+              headerPath="../../Source&#10;/usr/include/c++/11&#10;/usr/include/x86_64-linux-gnu/c++/11&#10;/usr/include/c++/11/backward&#10;/usr/lib/gcc/x86_64-linux-gnu/11/include&#10;/usr/local/include&#10;/usr/include/x86_64-linux-gnu&#10;/usr/include">
+  <MAINGROUP id="PSUQdU" name="Ambilink">
+    <GROUP id="{80ADAF59-10E9-3B55-F0A4-00C941C2D7CA}" name="Source">
+      <FILE id="uBldDh" name="ErrorScreen.cpp" compile="1" resource="0" file="Source/GUI/ErrorScreen.cpp"/>
+      <FILE id="pamrGO" name="Subscribed.cpp" compile="1" resource="0" file="Source/IPC/States/Subscribed.cpp"/>
+      <FILE id="u0XJrl" name="State.cpp" compile="1" resource="0" file="Source/IPC/States/State.cpp"/>
+      <FILE id="GaeHKM" name="OfflineRendering.cpp" compile="1" resource="0"
+            file="Source/IPC/States/OfflineRendering.cpp"/>
+      <FILE id="kT6Qk5" name="ObjectDeleted.cpp" compile="1" resource="0"
+            file="Source/IPC/States/ObjectDeleted.cpp"/>
+      <FILE id="gkCaaT" name="ErrorState.cpp" compile="1" resource="0" file="Source/IPC/States/ErrorState.cpp"/>
+      <FILE id="nbREnm" name="Disconnected.cpp" compile="1" resource="0"
+            file="Source/IPC/States/Disconnected.cpp"/>
+      <FILE id="lsqBvD" name="Connected.cpp" compile="1" resource="0" file="Source/IPC/States/Connected.cpp"/>
+      <FILE id="wRHAp3" name="Common.cpp" compile="1" resource="0" file="Source/IPC/States/Common.cpp"/>
+      <FILE id="h7KQiN" name="TimelineDirectionData.cpp" compile="1" resource="0"
+            file="Source/Utility/TimelineDirectionData.cpp"/>
+      <FILE id="Y3wS1Y" name="Utils.cpp" compile="1" resource="0" file="Source/Utility/Utils.cpp"/>
+      <FILE id="pbNTe0" name="TopPanel.cpp" compile="1" resource="0" file="Source/GUI/Components/TopPanel.cpp"/>
+      <FILE id="WhWxts" name="Consumers.cpp" compile="1" resource="0" file="Source/Events/Consumers.cpp"/>
+      <FILE id="b5FU5r" name="SettingsScreen.cpp" compile="1" resource="0"
+            file="Source/GUI/SettingsScreen.cpp"/>
+      <FILE id="oNUTi2" name="LookAndFeel.cpp" compile="1" resource="0" file="Source/GUI/LookAndFeel.cpp"/>
+      <FILE id="ltGoZC" name="ConnectionScreen.cpp" compile="1" resource="0"
+            file="Source/GUI/ConnectionScreen.cpp"/>
+      <FILE id="LF8Bue" name="ObjectSelectionScreen.cpp" compile="1" resource="0"
+            file="Source/GUI/ObjectSelectionScreen.cpp"/>
+      <FILE id="aTvfas" name="SubscribedObjectDisplay.cpp" compile="1" resource="0"
+            file="Source/GUI/Components/SubscribedObjectDisplay.cpp"/>
+      <FILE id="cODRKS" name="MainScreen.cpp" compile="1" resource="0" file="Source/GUI/MainScreen.cpp"/>
+      <FILE id="vY1RIb" name="DirectionFromLocation.cpp" compile="1" resource="0"
+            file="Source/Math/DirectionFromLocation.cpp"/>
+      <FILE id="osVpMm" name="BasicEncoder.cpp" compile="1" resource="0"
+            file="Source/Encoder/BasicEncoder.cpp"/>
+      <FILE id="aQqTLA" name="Protocol.cpp" compile="1" resource="0" file="Source/IPC/Protocol.cpp"/>
+      <FILE id="zJBaav" name="Client.cpp" compile="1" resource="0" file="Source/IPC/Client.cpp"/>
+      <FILE id="rHvkAV" name="ByteIO.cpp" compile="1" resource="0" file="Source/IPC/ByteIO.cpp"/>
+      <FILE id="wuTqCP" name="PluginProcessor.cpp" compile="1" resource="0"
+            file="Source/PluginProcessor.cpp"/>
+      <FILE id="xULT1Q" name="PluginProcessor.h" compile="0" resource="0"
+            file="Source/PluginProcessor.h"/>
+      <FILE id="vthlP5" name="PluginEditor.cpp" compile="1" resource="0"
+            file="Source/PluginEditor.cpp"/>
+    </GROUP>
+  </MAINGROUP>
+  <JUCEOPTIONS JUCE_STRICT_REFCOUNTEDPOINTER="1" JUCE_VST3_CAN_REPLACE_VST2="0"/>
+  <EXPORTFORMATS>
+    <LINUX_MAKE targetFolder="Builds/LinuxMakefile" extraLinkerFlags="-lfmt -lsaf -lfftw3f -lnng -lopenblas -lpthread -lgfortran -lspdlog &#10;-lspdlog"
+                extraCompilerFlags="-Wall&#10;-isystem ../../../third-party/include&#10;-isystem ../../../third-party/include/openblas&#10;-isystem ../../../third-party/Spatial_Audio_Framework/framework/include&#10;-isystem ../../../third-party/nngpp/include">
+      <CONFIGURATIONS>
+        <CONFIGURATION isDebug="0" name="Release" libraryPath="../../../third-party/lib&#10;../../../build/lib"
+                       recommendedWarnings="GCC"/>
+        <CONFIGURATION isDebug="1" name="Debug" libraryPath="../../../third-party/lib&#10;../../../build/lib"
+                       recommendedWarnings="GCC"/>
+      </CONFIGURATIONS>
+      <MODULEPATHS>
+        <MODULEPATH id="juce_audio_basics" path="../build/_deps/juce-src/modules"/>
+        <MODULEPATH id="juce_audio_devices" path="../build/_deps/juce-src/modules"/>
+        <MODULEPATH id="juce_audio_formats" path="../build/_deps/juce-src/modules"/>
+        <MODULEPATH id="juce_audio_plugin_client" path="../build/_deps/juce-src/modules"/>
+        <MODULEPATH id="juce_audio_processors" path="../build/_deps/juce-src/modules"/>
+        <MODULEPATH id="juce_audio_utils" path="../build/_deps/juce-src/modules"/>
+        <MODULEPATH id="juce_core" path="../build/_deps/juce-src/modules"/>
+        <MODULEPATH id="juce_data_structures" path="../build/_deps/juce-src/modules"/>
+        <MODULEPATH id="juce_dsp" path="../build/_deps/juce-src/modules"/>
+        <MODULEPATH id="juce_events" path="../build/_deps/juce-src/modules"/>
+        <MODULEPATH id="juce_graphics" path="../build/_deps/juce-src/modules"/>
+        <MODULEPATH id="juce_gui_basics" path="../build/_deps/juce-src/modules"/>
+        <MODULEPATH id="juce_gui_extra" path="../build/_deps/juce-src/modules"/>
+      </MODULEPATHS>
+    </LINUX_MAKE>
+  </EXPORTFORMATS>
+  <MODULES>
+    <MODULE id="juce_audio_basics" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
+    <MODULE id="juce_audio_devices" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
+    <MODULE id="juce_audio_formats" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
+    <MODULE id="juce_audio_plugin_client" showAllCode="1" useLocalCopy="0"
+            useGlobalPath="0"/>
+    <MODULE id="juce_audio_processors" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
+    <MODULE id="juce_audio_utils" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
+    <MODULE id="juce_core" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
+    <MODULE id="juce_data_structures" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
+    <MODULE id="juce_dsp" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
+    <MODULE id="juce_events" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
+    <MODULE id="juce_graphics" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
+    <MODULE id="juce_gui_basics" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
+    <MODULE id="juce_gui_extra" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
+  </MODULES>
+</JUCERPROJECT>

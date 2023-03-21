@@ -1,0 +1,280 @@
+%% This is the ctufit-thesis example file. It is used to produce theses
+%% for submission to Czech Technical University, Faculty of Information Technology.
+%%
+%% Get the newest version from
+%% https://gitlab.fit.cvut.cz/theses-templates/FITthesis-LaTeX
+%%
+%%
+%% Copyright 2021, Eliska Sestakova and Ondrej Guth
+%%
+%% This work may be distributed and/or modified under the
+%% conditions of the LaTeX Project Public Licenese, either version 1.3
+%% of this license or (at your option) any later version.
+%% The latest version of this license is in
+%%  https://www.latex-project.org/lppl.txt
+%% and version 1.3 or later is part of all distributions of LaTeX
+%% version 2005/12/01 or later.
+%%
+%% This work has the LPPL maintenance status `maintained'.
+%%
+%% The current maintainer of this work is Ondrej Guth.
+%% Contact ondrej.guth@fit.cvut.cz for bug reports.
+%% Alternatively, submit bug reports into the tracker at
+%% https://gitlab.fit.cvut.cz/theses-templates/FITthesis-LaTeX/issues
+%%
+%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% CLASS OPTIONS
+% language: czech/english/slovak
+% thesis type: bachelor/master/dissertation
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\documentclass[english,bachelor,unicode]{ctufit-thesis}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% FILL IN THIS INFORMATION
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\ctufittitle{Spatial sound for immersive video} % replace with the title of your thesis
+\ctufitauthorfull{Ivan Desiatov} % replace with your full name (first name(s) and then family name(s) / surname(s)) including academic degrees
+\ctufitauthorsurnames{Desiatov} % replace with your surname(s) / family name(s)
+\ctufitauthorgivennames{Ivan} % replace with your first name(s) / given name(s)
+\ctufitsupervisor{Ing.\,Jan Buriánek} % replace with name of your supervisor/advisor (include academic degrees)
+\ctufitdepartment{Department of Software Engineering} % replace with the department of your defence
+\ctufityear{2022} % replace with the year of your defence
+\ctufitdeclarationplace{Prague} % replace with the place where you sign the declaration
+\ctufitdeclarationdate{\today} % replace with the date of signature of the declaration
+\ctufitabstractCZE{
+    Práce představuje nejvýznamnější moderní technologie ve sféře prostorového audia
+    a uvádí výhody, díky kterým ambisonie začíná být standardním formátem zvuku pro 360\degree{}~video.
+    Práce uvádí čtenáře do teoretických základů ambisonie a popisuje několik důležitých dekódovacích technik.
+    Následně je představeno softwarové řešení umožňující automatické prostorové panorámování zvuku v DAW
+    na základě 3D pozicí objektů (vůči aktivní kameře) ve scéně v Blenderu.
+    Implementace obsahuje dva pluginy - plugin pro Blender, umožňující
+    přístup k současnému stavu 3D scény, a VST plugin, který využívá tyto informace o 3D scéně pro ambisonické panorámování zvuku.
+    Panoramovácí směrové vektory jsou aktualizovaný v reálném čase pomoci meziprocesové komunikace.
+    Umělcům a inženýrům pracujícím na projektu to pak dovoluje mít před sebou náhled animace a současně provádět změny v audiu,
+    a obráceně - slyšet, jak změny v poloze objektů ovlivňují zvuk.
+    Představené řešení je nejužitečnější pro produkci prostorového zvuku pro 360\degree{} 3D animace,
+    kde může výrazně snížit počet kanálů vyžadujících ruční panoramování.
+    Najde ale využití i v neanimovaných projektech, kde může sloužit k vizualizaci pohybu zdrojů zvuku,
+    a umožní využití dostupných v Blenderu pokročilých nástrojů pro 3D animaci.
+}
+\ctufitabstractENG{
+    This thesis provides an overview of modern immersive audio technologies and outlines why ambisonics 
+    is becoming the industry-standard spatial audio format for 360\degree{} video. 
+    An introduction to ambisonics theory is provided, and several important decoding techniques are described. 
+    A software solution is then presented, which implements automatic spatial panning of sounds in a DAW based on the 3D positions of objects (relative to the active camera) in the Blender scene.
+    The implementation consists of two plugins - a Blender plugin to access the 3D scene data, and a VST ambisonic panner plugin that utilises said scene data to calculate the panning direction.
+    Panning direction vectors are updated in real time using interprocess communication, allowing artists to preview the animation while simultaneously making adjustments to the audio, and vice versa.
+    The presented solution is especially useful in producing spatial audio for 360\degree{} 3D animations, where it can help reduce the number of audio sources that have to be panned manually.
+    It can however find a place in non-animated projects as well, where it can be used to visualise the movement of sound sources, and would allow to use Blender's advanced 3D animation toolset
+    for animating sound source positions.
+}
+\ctufitkeywordsCZE{ambisonie, prostorový zvuk, blender, 360 stupňové video, virtualní realita, digital audio workstation, VST, plugin, JUCE, meziprocesová komunikace}
+\ctufitkeywordsENG{ambisonics, spatial audio, blender, 360 degree video, virtual reality, digital audio workstation, VST, plugin, JUCE, inter-process communication}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% END FILL IN
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% CUSTOMIZATION of this template
+% Skip this part or alter it if you know what you are doing.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\RequirePackage{iftex}[2020/03/06]
+\iftutex % XeLaTeX and LuaLaTeX
+    \RequirePackage{ellipsis}[2020/05/22] %ellipsis workaround for XeLaTeX
+\else
+    \RequirePackage[utf8]{inputenc}[2018/08/11] %this file encoding
+    \RequirePackage{lmodern}[2009/10/30] % vector flavor of Computer Modern font
+\fi
+
+% hyperlinks
+\RequirePackage[pdfpagelayout=TwoPageRight,colorlinks=false,allcolors=decoration,pdfborder={0 0 0.1}]{hyperref}[2020-05-15]
+
+% uncomment the following to hide all hyperlinks
+% \RequirePackage[pdfpagelayout=TwoPageRight,hidelinks]{hyperref}[2020-05-15]
+
+\RequirePackage{pdfpages}[2020/01/28]
+
+\setcounter{secnumdepth}{4} % numbering sections; 4: subsubsection
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% CUSTOMIZATION of this template END
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%%%%%%%%%%%%%%%%%%%%%%
+% DEMO CONTENTS SETTINGS
+% You may choose to modify this part.
+%%%%%%%%%%%%%%%%%%%%%%
+\usepackage{gensymb}
+\usepackage{dirtree}
+\usepackage{lipsum,tikz}
+\usepackage{csquotes}
+\usepackage{float}
+\usepackage[style=iso-numeric]{biblatex}
+% \usepackage{listings} % typesetting of source code
+\usepackage{minted} % typesetting of source code
+\usepackage{graphicx}
+\usepackage{bm}
+\usepackage{wrapfig}
+\usepackage{enumitem}
+\usepackage{array}
+
+\graphicspath{images}
+
+%theorems, definitions, etc.
+\theoremstyle{plain}
+\newtheorem{theorem}{Věta}
+\newtheorem{lemma}[theorem]{Tvrzení}
+\newtheorem{corollary}[theorem]{Důsledek}
+\newtheorem{proposition}[theorem]{Návrh}
+\newtheorem{definition}[theorem]{Definice}
+\theoremstyle{definition}
+\newtheorem{example}[theorem]{Příklad}
+\theoremstyle{remark}
+\newtheorem{note}[theorem]{Poznámka}
+\newtheorem*{note*}{Poznámka}
+\newtheorem{remark}[theorem]{Pozorování}
+\newtheorem*{remark*}{Pozorování}
+\numberwithin{theorem}{chapter}
+
+\newlist{funcreqs}{enumerate}{2}
+\setlist[funcreqs, 1]{label = \textbf{FR\arabic*:}, leftmargin=*}
+\setlist[funcreqs, 2]{label = FR\arabic{funcreqi}.\arabic*, leftmargin=*}
+\newlist{nonfuncreqs}{enumerate}{2}
+\setlist[nonfuncreqs, 1]{label = \textbf{NFR\arabic*:}, leftmargin=*}
+\setlist[nonfuncreqs, 2]{label = NFR\arabic{funcreqi}.\arabic*, leftmargin=*}
+
+%theorems, definitions, etc. END
+%%%%%%%%%%%%%%%%%%%%%%
+% DEMO CONTENTS SETTINGS END
+%%%%%%%%%%%%%%%%%%%%%%
+
+% \bibliography{text/bib-database}
+\addbibresource{bib-database.bib}
+
+\begin{document} 
+
+\newmint{cpp}{}
+\newmintinline{cpp}{}
+\newmint{python}{}
+\newmintinline{python}{}
+
+\frontmatter\frontmatterinit % do not remove these two commands
+
+\includepdf{zadani_bp-include.pdf} % replace that file with your thesis assignment provided by study office
+
+\thispagestyle{empty}\cleardoublepage\maketitle % do not remove these three commands
+
+\imprintpage % do not remove this command
+
+\tableofcontents % do not remove this command
+%%%%%%%%%%%%%%%%%%%%%%
+% list of other contents: figures, tables, code listings, algorithms, etc.
+% add/remove commands accordingly
+%%%%%%%%%%%%%%%%%%%%%%
+\listoffigures % list of figures
+\begingroup
+\let\clearpage\relax
+\listoftables % list of tables
+% \lstlistoflistings % list of source code listings generated by the listings package
+\listoflistings % list of source code listings generated by the minted package
+\endgroup
+%%%%%%%%%%%%%%%%%%%%%%
+% list of other contents END
+%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%
+% ACKNOWLEDGMENT
+% FILL IN / MODIFY
+% This is a place to thank people for helping you. It is common to thank your supervisor.
+%%%%%%%%%%%%%%%%%%%
+\begin{acknowledgmentpage}
+	I would like to thank my thesis mentor, Jan Buriánek, for providing advice and valuable industry insight,
+    as well as the people who have supported me throughout the process of putting this together; you know who you are.
+\end{acknowledgmentpage} 
+%%%%%%%%%%%%%%%%%%%
+% ACKNOWLEDGMENT END
+%%%%%%%%%%%%%%%%%%%
+
+
+%%%%%%%%%%%%%%%%%%%
+% DECLARATION
+% FILL IN / MODIFY
+%%%%%%%%%%%%%%%%%%%
+% INSTRUCTIONS
+% ENG: choose one of approved texts of the declaration. DO NOT CREATE YOUR OWN. Find the approved texts at https://courses.fit.cvut.cz/SFE/download/index.html#_documents (document Declaration for FT in English)
+% CZE/SLO: Vyberte jedno z fakultou schvalenych prohlaseni. NEVKLADEJTE VLASTNI TEXT. Schvalena prohlaseni najdete zde: https://courses.fit.cvut.cz/SZZ/dokumenty/index.html#_dokumenty (prohlášení do ZP)
+\begin{declarationpage}
+I  hereby  declare  that  the  presented  thesis  is  my  own \
+work  and  that  I  have  cited  all sources  of  information  in  accordance  with  the  Guideline  for  adhering  to  ethical principles when elaborating an academic final thesis. I acknowledge that my thesis is subject to the rights and obligations stipulated by the Act No. 121/2000 Coll., the Copyright Act, as amended. In accordance with Article 46(6) of  the  Act,  I  hereby  grant  a  nonexclusive  authorization  (license)  to  utilize  this  thesis, including any and all computer programs incorporated therein or attached thereto and all corresponding documentation (hereinafter collectively referred to as the “Work”), to any and all persons that wish to utilize the Work. Such persons are entitled to use the Work for non-profit purposes only, in any way that does not detract from its value. This authorization is not limited in terms of time, location and quantity.
+\end{declarationpage}
+%%%%%%%%%%%%%%%%%%%
+% DECLARATION END
+%%%%%%%%%%%%%%%%%%%
+
+\printabstractpage % do not remove this command
+
+%%%%%%%%%%%%%%%%%%%
+% ABBREVIATIONS
+% FILL IN / MODIFY
+% OR REMOVE ENTIRELY
+% List the abbreviations in lexicography order.
+%%%%%%%%%%%%%%%%%%%
+\chapter{List of abbreviations}
+% A B C D E F G H I J K L M N O P Q R S T U V W X Y Z
+\begin{tabular}{rl}
+API & Application Programming Interface\\
+AR & Augmented Reality\\
+CBA & Channel-based Audio\\
+DAW & Digital Audio Workstation\\
+FIFO & First In, First Out\\
+FFT & Fast Fourier Transform\\
+FPS & First-Person Shooter\\
+FPS & Frames per Second\\
+GUI & Graphical User Interface\\
+HCI & Human-Computer Interface\\
+HRIR & Head-Related Impulse Response\\
+HRTF & Head-Related Transfer Function\\
+MR & Mixed Reality\\
+M/S Stereo & Mid/Side Stereo\\
+OBA & Object-based Audio\\
+SBA & Scene-based Audio\\
+SDK & Software Development Kit\\
+VR & Virtual Reality\\
+VST & Virtual Studio Technology\\
+UI & User Interface\\
+UX & User Experience\\
+% XR & Extended Reality\\
+\end{tabular}
+%%%%%%%%%%%%%%%%%%%
+% ABBREVIATIONS END
+%%%%%%%%%%%%%%%%%%%
+
+\include{text/introduction.tex}
+
+\mainmatter\mainmatterinit % do not remove these two commands
+
+%%%%%%%%%%%%%%%%%%%
+% THE THESIS
+% MODIFY ANYTHING BELOW THIS LINE
+%%%%%%%%%%%%%%%%%%%
+\setcounter{page}{1}
+\include{text/chapters/analysis.tex}
+\include{text/chapters/design_and_implementation.tex}
+\include{text/chapters/testing_evaluation_and_conclusion.tex}
+
+
+\appendix\appendixinit % do not remove these two commands
+
+\include{text/appendix} % include `appendix.tex' from `text/' subdirectory
+
+\backmatter % do not remove this command
+
+\printbibliography % print out the BibLaTeX-generated bibliography list
+
+\include{text/medium} % include `medium.tex' from `text/' subdirectory
+
+\end{document}

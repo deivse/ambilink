@@ -1,0 +1,3 @@
+apt:
+    python3-dev
+    cmake
