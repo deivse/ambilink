@@ -8,7 +8,7 @@ SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 cd $SCRIPT_DIR
 
 ensure_installed() {
-    dpkg -l | grep -q "[[:space:]]$1[[:space:]]"
+    dpkg -l | grep -q "[[:space:]]$1\(:[^[:space:]]\+\)\?[[:space:]]";
     if [ $? -ne 0 ]; then
         echo "The package $1 will now be installed. You may be prompted for your password."
         sudo apt-get -y install $1
@@ -23,6 +23,7 @@ ensure_installed bear # to generate compile_commands.json from Makefile build
 ensure_installed python3
 ensure_installed python3-pip
 ensure_installed cmake
+ensure_installed gfortran # to build openblas
 
 ### JUCE dependencies: ###
 ensure_installed pkg-config 
@@ -56,6 +57,8 @@ echo "============= Building dependencies ============="
 echo "================================================="; echo
 cmake -S . -B build
 cd build; cmake --build . --config $CONFIG
+cmake --build . --config $CONFIG --target Projucer
+cp ./_deps/juce-build/extras/Projucer/Projucer_artefacts/$CONFIG/Projucer ../third-party/Projucer
 
 cd $INIT_DIR
 ########################

@@ -1,16 +1,18 @@
 # Ambilink
 Ambilink enables the use of Blender for
-controlling the direction of ambisonic panning in a DAW.
+controlling the direction of ambisonic panning in a DAW. 
 It consists of two plugins connected via IPC (using the [nng](https://github.com/nanomsg/nng) library):
 - **VST3 Plugin** - performs ambisonic panning up to fifth order (ACN channel ordering, N3D/SN3D normalisation). An object from the Blender scene can be picked in the GUI, the panning direction during real-time playback is then given by the current position of the object relative to the active camera. When rendering audio to a file, the plugin's output is synchronised to the animation in Blender.
 - **Blender add-on** - provides data about the Blender scene to VST instances via IPC.
-In real-time mode continuously publishes updated camera space coordinates of objects with at least one subscribed VST instance, in offline rendering mode sends coordinates for each frame in the animation .
+In real-time mode continuously publishes updated camera space coordinates of objects with at least one subscribed VST instance, in offline rendering mode sends coordinates for each frame in the animation.
 
 This allows to tie any instance of the VST3 ambisonic panner to any
 Blender object, the position of which can be controlled by any means
 available in Blender - keyframe animation, drivers, scripts, etc.
 
 ## VST Plugin
+
+The VST3 source code is located under `code/vst/projucer_project/Source`.
 
 ### Building
 
@@ -43,7 +45,7 @@ The Blender `code/blender/addons/ambilink` directory may either be directly copi
 ## License 
 The software is licensed under [GPLv3](./LICENSE).
 
-The [JUCE Framework](https://github.com/juce-framework/JUCE) is dual-licensed under GPLv3 and a proprietary license. The framework itself is not distributed with the project and is downloaded using CPM.
+The [JUCE Framework](https://github.com/juce-framework/JUCE) is dual-licensed under GPLv3 and a proprietary license. The framework itself is not distributed with the project and is downloaded using [CPM](https://github.com/TheLartians/CPM.cmake).
 
 Other third-party libraries are used either as GIT submodules, or conan packages. For git submodules, the licenses can be found in each submodule's respective repository. For conan packages, the licenses are copied to `code/vst/third-party/licences` when dependencies are installed.
 
