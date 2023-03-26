@@ -1,5 +1,3 @@
-include(${CMAKE_SOURCE_DIR}/cmake/CPM.cmake)
-
 #Minimum MacOS target, set globally
 set(CMAKE_OSX_DEPLOYMENT_TARGET "10.9" CACHE STRING "Minimum OS X deployment version" FORCE)
 
@@ -18,7 +16,7 @@ option(JUCE_ENABLE_MODULE_SOURCE_GROUPS "Enable Module Source Groups" ON)
 
 #set any of these to "ON" if you want to build one of the juce examples
 #or extras (Projucer/AudioPluginHost, etc):
-option(JUCE_BUILD_EXTRAS "Build JUCE Extras" ON)
+option(JUCE_BUILD_EXTRAS "Build JUCE Extras" OFF)
 option(JUCE_BUILD_EXAMPLES "Build JUCE Examples" OFF)
 
-CPMAddPackage("gh:juce-framework/JUCE#6.1.6")
+add_subdirectory(${CMAKE_SOURCE_DIR}/third-party/JUCE)

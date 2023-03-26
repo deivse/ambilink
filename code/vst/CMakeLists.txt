@@ -1,18 +1,23 @@
 cmake_minimum_required(VERSION 3.16)
-project(ambilink)
+project(ambilink VERSION 1.0.0 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_EXPORT_COMPILE_COMMANDS TRUE)
+
+if(NOT UNIX)
+    message(FATAL_ERROR "Only Linux is currently supported by the build system.")
+endif()
 
 include(cmake/configure_juce.cmake)
 
 set(CONAN_DISABLE_CHECK_COMPILER FALSE)
 include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
 conan_basic_setup()
+include(${CMAKE_BINARY_DIR}/conan_paths.cmake)
 
 include(cmake/configure_saf.cmake)
 
-list(APPEND CMAKE_MODULE_PATH ${CMAKE_BINARY_DIR})
 add_subdirectory(${CMAKE_SOURCE_DIR}/third-party/nngpp)
 
-add_subdirectory(sandbox)
+# adds and configures the actual plugin target
+include(cmake/ambilink.cmake)

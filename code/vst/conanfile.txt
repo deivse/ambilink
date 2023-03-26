@@ -8,7 +8,7 @@ glm/cci.20220420
 
 [generators]
 cmake
-cmake_find_package
+cmake_paths
 cmake_find_package_multi
 
 [options]

@@ -23,12 +23,15 @@ The VST is developed using C++20 and the [JUCE framework](https://github.com/juc
 The build system uses CMake and Projucer-generated Makefiles. (Projucer is a utility included with JUCE.)
 To build and install the plugin, run the following commands:
 ```bash
-> ./build_vst3_linux.sh # clones git submodules, installs .deb and conan packages, builds dependencies and the plugin itself.
-> ./install_vst3_linux.sh CONFIG=Release # builds the vst, generates compile_commands.json, copies to ~/.vst3/
+> cd code/vst
+> ./install_dependencies.sh # clones git submodules, installs .deb and conan packages
+> ./build.sh # builds the plugin and submodule dependencies
 ```
 
 > **Warning**
 > the install script currently only supports Debian-based systems.
+
+After the build finishes, the plugin will be located under `build/Ambilink.vst3`. The required VST3 directory structure is created by `build.sh`, if just `cmake --build` is used instead, the final output is the shared library `build/libs/Ambilink.so`.
  
 #### Non-linux builds
 The C++ source itself is multiplatform (although some minor changes might be required for compiling with MSVC or Apple-Clang).
@@ -45,7 +48,7 @@ The Blender `code/blender/addons/ambilink` directory may either be directly copi
 ## License 
 The software is licensed under [GPLv3](./LICENSE).
 
-The [JUCE Framework](https://github.com/juce-framework/JUCE) is dual-licensed under GPLv3 and a proprietary license. The framework itself is not distributed with the project and is downloaded using [CPM](https://github.com/TheLartians/CPM.cmake).
+The [JUCE Framework](https://github.com/juce-framework/JUCE) is dual-licensed under GPLv3 and a proprietary license. The framework itself is not distributed with the project and is consumed as a GIT submodule.
 
 Other third-party libraries are used either as GIT submodules, or conan packages. For git submodules, the licenses can be found in each submodule's respective repository. For conan packages, the licenses are copied to `code/vst/third-party/licences` when dependencies are installed.
 

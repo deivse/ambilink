@@ -1,8 +1,4 @@
 #!/bin/bash
-########################
-CONFIG=Release
-########################
-
 INIT_DIR=$( pwd )
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 cd $SCRIPT_DIR
@@ -23,6 +19,7 @@ ensure_installed bear # to generate compile_commands.json from Makefile build
 ensure_installed python3
 ensure_installed python3-pip
 ensure_installed cmake
+ensure_installed gcc-11
 ensure_installed gfortran # to build openblas
 
 ### JUCE dependencies: ###
@@ -50,15 +47,9 @@ fi;
 
 pip3 install "conan<2.0"
 conan=$(python3 -m site --user-base)/bin/conan
-$conan install . -if build --profile=./conan_profiles/ubuntu20.conanprofile --build=missing
-
-echo; echo "================================================="
-echo "============= Building dependencies ============="
-echo "================================================="; echo
-cmake -S . -B build
-cd build; cmake --build . --config $CONFIG
-cmake --build . --config $CONFIG --target Projucer
-cp ./_deps/juce-build/extras/Projucer/Projucer_artefacts/$CONFIG/Projucer ../third-party/Projucer
+for build_type in Release Debug; do
+    $conan install . -if build -of build --profile=./conan_profiles/ubuntu20.conanprofile --build=missing -s build_type=$build_type
+done
 
 cd $INIT_DIR
 ########################

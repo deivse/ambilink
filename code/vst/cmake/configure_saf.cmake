@@ -1,15 +1,22 @@
 set(SAF_ENABLE_SOFA_READER_MODULE 1)
-if (APPLE)
+
+if(WIN32)
+# TODO
+elseif(APPLE)
     set(SAF_PERFORMANCE_LIB SAF_USE_APPLE_ACCELERATE)
-    #TODO
+
+# TODO
 else()
     set(SAF_PERFORMANCE_LIB SAF_USE_OPEN_BLAS_AND_LAPACKE)
     set(OPENBLAS_LIBRARY ${CONAN_LIBS_OPENBLAS})
-    set(LAPACKE_LIBRARY ${CONAN_LIBS_OPENBLAS}) #OpenBLAS package includes LAPACKE
+    set(LAPACKE_LIBRARY ${CONAN_LIBS_OPENBLAS}) # OpenBLAS package includes LAPACKE
     set(FFTW_LIBRARY ${CONAN_LIBS_FFTW})
     set(SAF_ENABLE_SIMD 1)
     set(SAF_USE_FFTW 1)
 endif()
+
+set(SAF_BUILD_EXAMPLES OFF)
+set(SAF_BUILD_EXTRAS OFF)
 
 add_subdirectory(${CMAKE_SOURCE_DIR}/third-party/Spatial_Audio_Framework)
 target_compile_options(saf PUBLIC -mavx2)

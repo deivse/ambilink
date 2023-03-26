@@ -4,3 +4,6 @@
 [submodule "code/vst/third-party/nngpp"]
 	path = code/vst/third-party/nngpp
 	url = https://github.com/cwzx/nngpp.git
+[submodule "code/vst/third-party/JUCE"]
+	path = code/vst/third-party/JUCE
+	url = https://github.com/juce-framework/JUCE.git
