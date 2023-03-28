@@ -14,7 +14,8 @@ tmp/
 __pycache__/
 *.reapeaks
 *.blend1
-
+code/vst/CMakeUserPresets.json
+code/vst/conan_imports_manifest.txt
 
 ## Core latex/pdflatex auxiliary files:
 *.aux

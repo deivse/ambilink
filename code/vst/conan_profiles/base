@@ -1,0 +1,10 @@
+include(default)
+
+[settings]
+compiler.cppstd=20
+build_type=Release
+
+[options]
+fftw:precision=single
+openblas:build_lapack=True
+spdlog:shared=False

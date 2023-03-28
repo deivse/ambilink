@@ -9,23 +9,32 @@ ensure_installed() {
         echo "The package $1 will now be installed. You may be prompted for your password."
         sudo apt-get -y install $1
     fi;
+    return 0
 }
 
 echo; echo "================================================="
 echo "======== Installing package dependencies ========"
 echo "================================================="; echo
 
-ensure_installed bear # to generate compile_commands.json from Makefile build
-ensure_installed python3
-ensure_installed python3-pip
-ensure_installed cmake
-ensure_installed gcc-11
-ensure_installed gfortran # to build openblas
+### The goal is to consume as much dependencies as
+### possible via conan, but it's hard...
 
-### JUCE dependencies: ###
-ensure_installed pkg-config 
-ensure_installed libfreetype6-dev
-ensure_installed libwebkit2gtk-4.0-dev
+ensure_installed python3 # to get conan
+ensure_installed python3-pip # to get conan
+ensure_installed cmake # we use a conan tools_requires for cmake, but some conan packages don't do that..
+ensure_installed gcc-11 # the version of juce used doesn't like gcc-12
+ensure_installed gfortran-11 # to build openblas - the recipe in conan center doesn't
+                             # include a build requirement for gfortran...
+
+### JUCE dependencies: ### (https://github.com/juce-framework/JUCE/blob/master/docs/Linux%20Dependencies.md)
+juce_dependencies="pkg-config libasound2-dev libjack-jackd2-dev ladspa-sdk libfreetype6-dev\
+                   libwebkit2gtk-4.0-dev libfreetype6-dev libx11-dev libxcomposite-dev libxcursor-dev\
+                   libxcursor-dev libxext-dev libxinerama-dev libxrandr-dev libxrender-dev"
+for pkg in $juce_dependencies; do
+    ensure_installed "$pkg"
+done
+
+set -e
 
 echo; echo "================================================="
 echo "============= Cloning GIT submodules ============"
@@ -47,9 +56,8 @@ fi;
 
 pip3 install "conan<2.0"
 conan=$(python3 -m site --user-base)/bin/conan
-for build_type in Release Debug; do
-    $conan install . -if build -of build --profile=./conan_profiles/ubuntu20.conanprofile --build=missing -s build_type=$build_type
-done
+
+$conan install . -if build --profile=./conan_profiles/ubuntu20 --build=missing
 
 cd $INIT_DIR
 ########################

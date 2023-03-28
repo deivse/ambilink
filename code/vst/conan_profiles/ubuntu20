@@ -1,4 +1,4 @@
-include(default)
+include(base)
 
 [settings]
 os=Linux
@@ -8,5 +8,11 @@ arch_build=x86_64
 compiler=gcc
 compiler.version=11
 compiler.libcxx=libstdc++11
-build_type=Release
-compiler.cppstd=20
+
+[env]
+CC=gcc-11
+CXX=g++-11
+FC=gfortran-11
+
+[options]
+fftw:simd=avx2

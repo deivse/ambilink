@@ -20,24 +20,23 @@ The VST3 source code is located under `code/vst/projucer_project/Source`.
 > The build system doesn't currently work on Windows and macOS (see next section).
 
 The VST is developed using C++20 and the [JUCE framework](https://github.com/juce-framework/JUCE). Some functions from [SAF](https://github.com/leomccormack/Spatial_Audio_Framework) and [GLM](https://github.com/g-truc/glm) are used.
-The build system uses CMake and Projucer-generated Makefiles. (Projucer is a utility included with JUCE.)
+The build system uses CMake and conan.
+
 To build and install the plugin, run the following commands:
 ```bash
 > cd code/vst
-> ./install_dependencies.sh # clones git submodules, installs .deb and conan packages
-> ./build.sh # builds the plugin and submodule dependencies
+> ./install_dependencies.sh # clones git submodules, installs .deb and conan packages (some conan packages may be built locally)
+> conan build . -if build # builds the project and git submodule dependencies
 ```
 
 > **Warning**
 > the install script currently only supports Debian-based systems.
-
-After the build finishes, the plugin will be located under `build/Ambilink.vst3`. The required VST3 directory structure is created by `build.sh`, if just `cmake --build` is used instead, the final output is the shared library `build/libs/Ambilink.so`.
  
 #### Non-linux builds
 The C++ source itself is multiplatform (although some minor changes might be required for compiling with MSVC or Apple-Clang).
 
-However, the build system is not currently fully set up for anything except linux.
-The [SAF](https://github.com/leomccormack/Spatial_Audio_Framework) library requires to be linked with a library compatible with the CBLAS and LAPACK standards. On Linux, OPENBLAS is used, but this part of the build system is not set up for Windows or macOS, where other libraries, providing better performance should probably be used (see [this section](https://github.com/leomccormack/Spatial_Audio_Framework/blob/master/docs/PERFORMANCE_LIBRARY_INSTRUCTIONS.md) of SAF docs). Pull requests are of course welcome.
+However, the build system is not currently fully set up for anything except Linux.
+The [SAF](https://github.com/leomccormack/Spatial_Audio_Framework) library requires to be linked with a library compatible with the CBLAS and LAPACK standards. On Linux, OPENBLAS is used, but this part of the build system is not set up for Windows or macOS, where other libraries, providing better performance should probably be used (see [this section](https://github.com/leomccormack/Spatial_Audio_Framework/blob/master/docs/PERFORMANCE_LIBRARY_INSTRUCTIONS.md) of SAF docs). This is the main, but not the only issue with the build system that would have to be solved to make it work on Windows/macOS. Pull requests are of course welcome.
 
 ## Blender add-on
 

@@ -44,9 +44,7 @@ target_compile_definitions(
     JUCE_WEB_BROWSER=0  # If you remove this, add `NEEDS_WEB_BROWSER TRUE` to the `juce_add_plugin` call
     JUCE_USE_CURL=0     # If you remove this, add `NEEDS_CURL TRUE` to the `juce_add_plugin` call
     JUCE_DISPLAY_SPLASH_SCREEN=0
-    JUCE_VST3_CAN_REPLACE_VST2=0
-
-    SPDLOG_FMT_EXTERNAL) # TODO: replace with conan thing?
+    JUCE_VST3_CAN_REPLACE_VST2=0) # TODO: replace with conan thing?
 
 target_include_directories(${ambilink_target} PRIVATE ${ambilink_source_dir})
 

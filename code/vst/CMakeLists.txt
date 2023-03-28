@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.16)
+cmake_minimum_required(VERSION 3.25)
 project(ambilink VERSION 1.0.0 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 20)
@@ -11,9 +11,6 @@ endif()
 include(cmake/configure_juce.cmake)
 
 set(CONAN_DISABLE_CHECK_COMPILER FALSE)
-include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
-conan_basic_setup()
-include(${CMAKE_BINARY_DIR}/conan_paths.cmake)
 
 include(cmake/configure_saf.cmake)
 
