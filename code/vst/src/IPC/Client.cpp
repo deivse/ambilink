@@ -51,9 +51,12 @@ IPCClient::~IPCClient() {
     }
     _states[_current_state_id].reset(nullptr);
 
-    // nng_close sometimes hangs indefinitely; suspect this is a nng bug.
-    // Hacky solution - leak memory and let OS cleanup.
-    // Doesn't affect further communication in any way.
+    // nng_close sometimes hangs; suspect this is due to an NNG bug.
+    // https://github.com/nanomsg/nng/issues/1543
+    // https://github.com/nanomsg/nng/pull/1616
+    //
+    // Temporary solution - leak memory and let OS cleanup.
+    // From my testing, this doesn't affect further communication in any way.
     _reqrep_sock.release();
     _pubsub_sock.release();
 }
