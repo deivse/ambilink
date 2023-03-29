@@ -10,6 +10,10 @@ This allows to tie any instance of the VST3 ambisonic panner to any
 Blender object, the position of which can be controlled by any means
 available in Blender - keyframe animation, drivers, scripts, etc.
 
+> **Note**
+> This project has been created as a Bachelor's thesis for the Faculty of Information Technology of the Czech Technical University in Prague.
+> This repository also includes the [thesis](thesis.pdf) and it's [LaTeX source](latex).
+
 ## VST Plugin
 
 The VST3 source code is located under `code/vst/projucer_project/Source`.
